@@ -11,7 +11,7 @@
 <br/>
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-![Status](https://img.shields.io/badge/status-v0.1%20specification-brightgreen)
+![Status](https://img.shields.io/badge/status-v0.2%20specification-brightgreen)
 ![Format](https://img.shields.io/badge/format-Markdown-lightgrey?logo=markdown)
 ![LLM](https://img.shields.io/badge/LLM-Copilot%20·%20Claude%20·%20Cursor%20·%20Aider-blueviolet)
 
@@ -63,6 +63,7 @@ DC 锚点), 这个限制可以放开。
 ```markdown
 ### [2026-04-09 10:10] 失败: 空间调色板 + grid_sample + PDE 对流全线溃败
 > #training-failure #grid-sample #pde #palette #gradient-disconnect
+> trigger: experiment — 训练后发尖重建几乎没有改善
 > ⚑ 关键转折点
 
 **现象** [已确认]: 训练后发尖重建几乎没有改善。
@@ -82,11 +83,12 @@ DC 锚点), 这个限制可以放开。
 - [推测] 所有依赖局部梯度的算子在零初始化+远程目标场景下都有梯度断裂问题。
 ```
 
-这里发生了三件传统文档里看不到的事:
+这里发生了四件传统文档里看不到的事:
 
 1. **`[已确认] / [推测] / [直觉]`** — 每个关键判断都声明了证据强度。LLM 没法把推测包装成事实。
 2. **`翻转条件`** — 每个假说都必须声明"什么会推翻我"。不可证伪的不是假说, 是教条。
 3. **`↗ 被 ... 修正`** — 当后续条目修正了之前的, 两条都保留。原始推理永远不被删除; 修正链本身就是最高价值的记录。
+4. **`trigger:`** — 每条记录*是什么引起了这次思考*。不只是什么变了, 而是因果输入: 哪个实验失败了、哪次对话等起了火花、哪个旧条目突然串了起来。这把 Trace 从认知*状态*的日志升级为认知*动力学*的记录。
 
 ---
 
@@ -192,7 +194,7 @@ your-project/
 
 ## 状态
 
-**v0.1 — 规范阶段。** 框架在真实研究中已稳定使用 (例子待发布于 `examples/`)。工具链刻意保持极简: 一份 Markdown 和一份协议文档。无构建步骤、无依赖、无锁定。
+**v0.2 — 规范阶段。** 框架在真实研究中已稳定使用 (例子待发布于 `examples/`)。v0.2 新增了 **trigger 标注** (认知动力学 — 是什么引起了每次认知变化) 和 **标签治理** (轻量级标签注册表, 防止标签熵增)。工具链刻意保持极简: 一份 Markdown 和一份协议文档。无构建步骤、无依赖、无锁定。
 
 计划中: 真实世界 Trace 案例、多语言翻译、`#tag` 检索 CLI、L0 → L1 压缩脚本。
 

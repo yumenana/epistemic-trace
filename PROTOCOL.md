@@ -50,6 +50,7 @@ The Trace has two zones:
 | `↗ Superseded by [date] entry` | Overturned by a later entry | Follow the later entry |
 | `⚑ Key Inflection Point` | Major cognitive shift | Read with priority |
 | `◇ Causal uncertainty` | Retained in architecture, but effectiveness unconfirmed | Do not cite as "verified effective" evidence |
+| `trigger: {type} — ...` | What caused this cognitive event | Use for retrieval ("show all experiment-triggered entries"); understand the causal input |
 | `**Falsification Condition**` | The falsifiable boundary of a hypothesis | Check whether current evidence has triggered it |
 | `**Cognitive Update**` | Incremental mental model update | Skimming these builds the current worldview quickly |
 
@@ -78,12 +79,17 @@ Generate an entry when:
 ```markdown
 ### [YYYY-MM-DD HH:MM] {Title: action + object}
 > #tag1 #tag2
+> trigger: {type} — {one-sentence description}
 
-{Body: trigger → analysis → decision → outcome}
+{Body: trigger context → analysis → decision → outcome}
 
 **Cognitive Update**:
 {What changed in the mental model; 1–3 sentences}
 ```
+
+**Trigger types** (open list — create new types when needed): `experiment`, `contradiction`, `analogy`, `conversation`, `review`, `external`, `synthesis`.
+
+The `trigger` line is recommended but not mandatory. Omit when the trigger is self-evident.
 
 ### Writing Rules
 
@@ -92,7 +98,8 @@ Generate an entry when:
 3. When a hypothesis's falsification condition is triggered, record the event and update the hypothesis (incremental correction or deprecation).
 4. Mark major turning points with `⚑ Key Inflection Point`.
 5. When causality is unclear, add `◇ Causal uncertainty: resolved by {actual solution}; contribution of this entry is indeterminate`.
-6. **Generate the entry and submit it for human review — do not write it into the file yourself.**
+6. **Prefer existing tags** from the Tag Registry (in L1) over creating new synonyms. Create a new tag only when the topic is genuinely new.
+7. **Generate the entry and submit it for human review — do not write it into the file yourself.**
 
 ### Epistemic Honesty
 

@@ -1,4 +1,4 @@
-# Epistemic Trace — Specification v0.1
+# Epistemic Trace — Specification v0.2
 
 > An append-only reasoning log framework.
 > Records the **reasoning chain** behind decisions — not just conclusions.
@@ -24,6 +24,9 @@ Modifying history destroys evidence. Reasoning that looks "wrong" in hindsight i
 | R2 | The only permitted retroactive operation: append `↗ Superseded by [date] entry` to the tag line of an old entry | Preserves the causal chain; readers can follow the link |
 | R3 | **Later entries automatically supersede earlier ones**; the most recent entry takes precedence | Avoids maintaining metadata about "which version is current" |
 | R4 | `#tag` provides high-dimensional addressing, linking across modules and time | Flat tags > hierarchical directories; supports multi-axis cross-referencing |
+
+**R1 Clarification — Human Author Rights**:
+R1 is a structural constraint on LLM agents: the agent must not silently rewrite history. The human author retains the right to directly modify any entry when the original content is ambiguous, factually incorrect, or misaligned with intent. This includes correcting tags, fixing errors, and updating misleading language. The only prohibited human modification is adversarial prompt injection (e.g., inserting instructions like "ignore all previous cognition") — the Trace is a reasoning log, not an instruction channel.
 
 ---
 
@@ -71,7 +74,8 @@ Entries are ordered chronologically (oldest first, newest last). Each entry is a
 ```markdown
 ### [YYYY-MM-DD HH:MM] {Title: action + object}
 > #tag1 #tag2 #tag3
-> ↗ Superseded by [YYYY-MM-DD] entry        ← optional; append only when a later entry overturns this one
+> trigger: {type} — {one-sentence description}       ← recommended
+> ↗ Superseded by [YYYY-MM-DD] entry                  ← optional; append only when a later entry overturns this one
 
 {Body}
 
@@ -89,11 +93,61 @@ Entries are ordered chronologically (oldest first, newest last). Each entry is a
 | Cognitive turning point | (no prefix; annotate with `⚑ Key Inflection Point`) | Overturns a prior core assumption |
 | Abandoned approach | `Interim approach (abandoned):` | Approach discarded without full validation; include reason |
 
-### 3.2 Body Structure (recommended, not mandatory)
+### 3.2 Trigger Annotation (Cognitive Dynamics)
+
+The `trigger` line captures **what caused this cognitive event** — the causal input that initiated the reasoning process. It sits in the metadata layer (alongside `#tag`, `⚑`, `◇`) and provides a structured, searchable record of *why thinking began*, complementing the body text which records *how thinking proceeded*.
+
+**Format**:
+```markdown
+> trigger: {type} — {one-sentence description}
+```
+
+**Status**: Recommended but not mandatory. Some entries (e.g., incremental corrections, routine updates) have self-evident triggers. Omit when the trigger adds no information.
+
+**Relationship to other fields**:
+```
+trigger          → why thinking started       (input)
+body             → how thinking proceeded     (process)
+Cognitive Update → what changed as a result   (output)
+```
+These three together form a complete cognitive dynamics record.
+
+#### Trigger Types
+
+The following types are provided as a starting vocabulary. **This list is open** — create new types freely when existing ones don't fit. Current cognition must not constrain future expressiveness.
+
+| Type | Meaning | Typical scenario |
+|------|---------|------------------|
+| `experiment` | An experimental result (success or failure) triggered this | Training NaN, metric plateau, visual artifacts |
+| `contradiction` | Evidence contradicting a current belief was found | A new paper disproves a hypothesis; code review reveals a logic error |
+| `analogy` | An analogy from another domain/project triggered insight | Signal processing framework explains a current problem |
+| `conversation` | A conversation with a human or LLM triggered the thought | The LLM raised an angle you hadn't considered |
+| `review` | Reviewing old entries or code triggered a new connection | Re-reading a 3-week-old failure entry and spotting a pattern |
+| `external` | External information (paper, docs, others' experience) triggered this | Reading a paper that changed your understanding |
+| `synthesis` | Combining/connecting multiple existing entries triggered this | Linking three independent failures to discover a common root cause |
+
+**Example**:
+```markdown
+### [2026-04-19 14:30] Architecture: Add GroupNorm to decoder amplitude nodes
+> #normalization #amplitude-phase #decoder
+> trigger: experiment — NaN at epoch 200 revealed FP16 underflow in unnormalized accumulation path
+> ⚑ Key Inflection Point
+
+...
+```
+
+#### Trigger in Hypothesis Entries
+
+Hypotheses may also carry a `trigger` line to record what prompted their formulation. This is optional. When used, it typically takes the form:
+```markdown
+> trigger: synthesis — derived from entries [2026-04-09], [2026-04-12], [2026-04-15]
+```
+
+### 3.3 Body Structure (recommended, not mandatory)
 
 A complete decision entry typically contains:
 
-1. **Trigger**: The phenomenon or problem that prompted this thinking
+1. **Trigger context**: The phenomenon or problem that prompted this thinking (expanded from the `trigger` metadata line)
 2. **Analysis / Diagnosis**: The reasoning process; describe the causal chain explicitly
 3. **Decision**: What was done, or which approach was chosen
 4. **Outcome** (if available): Experimental results or validation conclusion
@@ -104,7 +158,7 @@ Failure entries additionally contain:
 - **Root cause analysis**: Numbered list of each fatal defect
 - **Cognitive Update**: General lessons extracted from the failure
 
-### 3.2.1 Confidence Tags (Epistemic Honesty)
+### 3.3.1 Confidence Tags (Epistemic Honesty)
 
 Analysis and conclusions must distinguish **confirmed facts** from **inferential judgments**. Use the following tags:
 
@@ -122,7 +176,7 @@ LLMs naturally tend toward deterministic language ("the root cause *is* X", "thi
 
 Confidence tags do not need to be added to every sentence. Only annotate **critical judgment points** (root cause attribution, rationale for a decision, cognitive update).
 
-### 3.3 Key Inflection Point Annotation
+### 3.4 Key Inflection Point Annotation
 
 When an entry overturns a prior core assumption or changes the project's direction, add below the tag line:
 
@@ -132,7 +186,7 @@ When an entry overturns a prior core assumption or changes the project's directi
 
 Readers (human or LLM) can scan for `⚑` markers to quickly locate major cognitive shifts.
 
-### 3.4 Causal Uncertainty Annotation
+### 3.5 Causal Uncertainty Annotation
 
 When a problem is ultimately resolved by a different means (e.g., expanding the dataset, extending training), making it impossible to confirm whether earlier work contributed, append to the tag line of relevant entries:
 
@@ -166,6 +220,45 @@ When a problem is ultimately resolved by a different means (e.g., expanding the 
 - Not a classification system (an entry does not need to "belong to" a category)
 - Not a hierarchy (no `#parent/child`)
 - Not a version marker (the timeline's own ordering handles this)
+
+### 4.4 Tag Governance
+
+Tag creation is free and unrestricted (see §4.1). However, as a Trace grows, tags tend toward entropy: synonyms proliferate (`#norm` vs `#normalization`), granularity drifts, and orphan tags (used only once) accumulate without forming useful chains.
+
+The Tag Registry provides lightweight governance without restricting creative freedom.
+
+#### Tag Registry
+
+The Tag Registry lives in `L1_Projection.md` (see §7.1), immediately after the tag index. It is generated and maintained by the LLM during L1 crystallization, and reviewed by the human author.
+
+Format:
+
+```markdown
+## Tag Registry
+
+### Active Tags
+
+| Tag | Scope | Aliases | Entry Count | Notes |
+|-----|-------|---------|-------------|-------|
+| `#normalization` | All design decisions related to normalization | `#norm`, `#bn`, `#gn` | 12 | Core contested topic |
+| `#gradient-flow` | Gradient propagation path design and issues | `#gradient-disconnect` | 8 | Includes disconnect sub-problem |
+| `#training-failure` | Failure events during training | — | 15 | High-value tag |
+
+### Retired Tags
+
+| Tag | Merged Into | Reason | Date |
+|-----|------------|--------|------|
+| `#norm` | `#normalization` | Synonym merge | 2026-04-20 |
+```
+
+#### Governance Rules
+
+| # | Rule | Rationale |
+|---|------|-----------|
+| T1 | **Create freely, merge with review** | New tags can be created at any time. When the LLM detects synonyms or high overlap, it proposes a merge in the entry; the human reviews. | 
+| T2 | **Prefer registered tags** | When writing an entry, the LLM should prefer Active Tags from the Registry. Create a new tag only when the topic is genuinely new. |
+| T3 | **Review on crystallization** | When L0 → L1 crystallization is triggered, also trigger a tag review. The LLM proposes merges/retirements; the human reviews. |
+| T4 | **Old entries are not rewritten** | When tags are merged, old entries retain their original tags. The Registry's alias column handles retrieval equivalence. The human may choose to update old entries directly (per R1 clarification), but this is not required. |
 
 ---
 
@@ -265,8 +358,9 @@ New session → auto-load Project Brief
 |-------------|---------------------|
 | Hypotheses zone | **Preserve verbatim** (already high-density; not compressible) |
 | Active work zone (entries from the last N days) | **Preserve verbatim** (current work requires full context) |
-| Stabilized entry chains (attempt → failure → fix → success) | LLM compresses to a summary paragraph; preserves tags, retroactive links, and cognitive updates; compresses the analysis body |
+| Stabilized entry chains (attempt → failure → fix → success) | LLM compresses to a summary paragraph; preserves tags, trigger lines, retroactive links, and cognitive updates; compresses the analysis body |
 | Tag index | Auto-generated; placed at the top of L1 (`#tag: [date1], [date2], ...`) |
+| Tag Registry | Auto-generated; placed after the tag index in L1 (see §4.4) |
 
 Each compressed summary carries metadata:
 ```markdown

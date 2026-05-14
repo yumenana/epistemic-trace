@@ -11,7 +11,7 @@
 <br/>
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-![Status](https://img.shields.io/badge/status-v0.1%20specification-brightgreen)
+![Status](https://img.shields.io/badge/status-v0.2%20specification-brightgreen)
 ![Format](https://img.shields.io/badge/format-Markdown-lightgrey?logo=markdown)
 ![LLM](https://img.shields.io/badge/LLM-Copilot%20·%20Claude%20·%20Cursor%20·%20Aider-blueviolet)
 
@@ -64,6 +64,7 @@ only AC, preserves DC anchor), this restriction can be relaxed.
 ```markdown
 ### [2026-04-09 10:10] Failure: spatial palette + grid_sample + PDE convection collapsed
 > #training-failure #grid-sample #pde #palette #gradient-disconnect
+> trigger: experiment — hair-tip reconstruction showed zero improvement after full training
 > ⚑ Key Inflection Point
 
 **Observation** [confirmed]: After training, hair-tip reconstruction barely improved.
@@ -84,11 +85,12 @@ only AC, preserves DC anchor), this restriction can be relaxed.
   problem under (zero-init + remote-target) conditions.
 ```
 
-Three things are happening here that you don't see in conventional documentation:
+Four things are happening here that you don't see in conventional documentation:
 
 1. **`[confirmed] / [inferred] / [intuition]`** — every critical claim declares its evidential strength. The LLM cannot launder an inference into a fact.
 2. **`Falsification Condition`** — every hypothesis is required to state what would overturn it. Hypotheses without falsifiability are dogmas.
 3. **`↗ Superseded by`** — when a later entry corrects an earlier one, both are preserved. The original reasoning is never deleted; the chain of revision is itself the most valuable record.
+4. **`trigger:`** — each entry records *what caused this thinking to begin*. Not just what changed, but the causal input: which experiment failed, which conversation sparked the idea, which old entry suddenly connected. This turns the Trace from a log of cognitive *states* into a record of cognitive *dynamics*.
 
 ---
 
@@ -194,7 +196,7 @@ Once 5–10 entries share a `#tag`, a working hypothesis is usually visible. Ask
 
 ## Status
 
-**v0.1 — Specification.** The framework is stable in real research use (see `examples/` once published). Tooling is intentionally minimal: a Markdown file and a protocol document. No build step, no dependencies, no lock-in.
+**v0.2 — Specification.** The framework is stable in real research use (see `examples/` once published). v0.2 adds **trigger annotations** (cognitive dynamics — what caused each belief change) and **tag governance** (a lightweight Tag Registry to prevent tag entropy). Tooling is intentionally minimal: a Markdown file and a protocol document. No build step, no dependencies, no lock-in.
 
 Planned: a real-world Trace example, language translations, a `#tag` retrieval CLI, and an L0 → L1 compression script.
 
